@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وبلاگ برنامه‌نویسی | Programming Blog</title>
+    <style>
+        /* Reset و فونت‌ها */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.eot');
+            src: url('https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.woff') format('woff'),
+                 url('https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.ttf') format('truetype');
+            font-weight: normal;
+        }
+        
+        body {
+            font-family: 'Vazir', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        /* استایل صفحات */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* دکمه تغییر زبان */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .lang-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lang-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .lang-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .lang-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lang-btn:hover::after {
+            opacity: 1;
+        }
+        
+        /* هدر */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon fill="rgba(255,255,255,0.03)" points="0,100 100,0 100,100"/></svg>');
+            background-size: cover;
+            opacity: 0.5;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        /* منوی نویگیشن */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 1rem 2rem;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        /* منوی همبرگری برای موبایل */
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .hamburger-menu span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        /* دکمه‌های اصلی */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        /* انیمیشن‌های مختلف برای دکمه‌ها */
+        .btn-home {
+            background-color: #ff6b6b;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-home:hover {
+            animation: pulse 1s infinite;
+        }
+        
+        .btn-articles {
+            background-color: #48dbfb;
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 219, 251, 0.4);
+        }
+        
+        .btn-articles:hover {
+            animation: bounce 0.5s;
+        }
+        
+        .btn-tutorials {
+            background-color: #1dd1a1;
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 209, 161, 0.4);
+        }
+        
+        .btn-tutorials:hover {
+            animation: rubberBand 0.7s;
+        }
+        
+        .btn-contact {
+            background-color: #f368e0;
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 104, 224, 0.4);
+        }
+        
+        .btn-contact:hover {
+            animation: tada 1s;
+        }
+        
+        /* فرم ورود/ثبت‌نام */
+        .auth-forms {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            width: 300px;
+        }
+        
+        .auth-forms.active {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .auth-tab.active {
+            border-bottom: 2px solid #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        /* پنل کاربری */
+        .user-panel {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            width: 250px;
+        }
+        
+        .user-panel.active {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+        }
+        
+        .user-actions a {
+            display: block;
+            padding: 0.5rem 0;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .user-actions a:hover {
+            color: #667eea;
+        }
+        
+        /* دکمه ورود/پنل کاربری */
+        .auth-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        
+        /* محتوا */
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 60vh;
+        }
+        
+        .post {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .post h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        /* سیستم کامنت‌گذاری */
+        .comments-section {
+            margin-top: 3rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+        
+        .comment-list {
+            margin-top: 2rem;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .comment-content {
+            flex-grow: 1;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-date {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .comment-text {
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        /* سیستم جستجو */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0 2rem;
+        }
+        
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: inherit;
+            padding-right: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            padding: 0 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #667eea;
+        }
+        
+        /* صفحه خانه */
+        .welcome-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .welcome-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #444;
+        }
+        
+        /* صفحه مقالات */
+        .article-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .article-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .article-image {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .article-content {
+            padding: 1.5rem;
+        }
+        
+        /* صفحه آموزش‌ها */
+        .tutorial-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        
+        .category-card {
+            width: 250px;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+        
+        /* صفحه تماس */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* نتایج جستجو */
+        .search-results {
+            margin-top: 2rem;
+        }
+        
+        .search-result-item {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* فوتر */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        /* انیمیشن‌های کلیدی */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes rubberBand {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scaleX(1.25) scaleY(0.75);
+            }
+            40% {
+                transform: scaleX(0.75) scaleY(1.25);
+            }
+            60% {
+                transform: scaleX(1.15) scaleY(0.85);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes tada {
+            0% {
+                transform: scale(1);
+            }
+            10%, 20% {
+                transform: scale(0.9) rotate(-3deg);
+            }
+            30%, 50%, 70%, 90% {
+                transform: scale(1.1) rotate(3deg);
+            }
+            40%, 60%, 80% {
+                transform: scale(1.1) rotate(-3deg);
+            }
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+        
+        /* حالت انگلیسی (LTR) */
+        html[lang="en"] {
+            direction: ltr;
+        }
+        
+        /* حالت فارسی (RTL) */
+        html[lang="fa"] {
+            direction: rtl;
+        }
+        
+        /* رسپانسیو برای موبایل */
+        @media (max-width: 768px) {
+            .main-nav {
+                flex-direction: column;
+                align-items: center;
+                display: none;
+            }
+            
+            .main-nav.active {
+                display: flex;
+            }
+            
+            .hamburger-menu {
+                display: block;
+            }
+            
+            .hamburger-menu.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .hamburger-menu.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger-menu.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+            
+            .article-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .tutorial-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .category-card {
+                width: 100%;
+            }
+            
+            .auth-forms, .user-panel {
+                width: 90%;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <button class="lang-btn" id="languageToggle">EN</button>
+    </div>
+    
+    <button class="auth-btn" id="authToggle">
+        <span id="authBtnText">ورود / ثبت‌نام</span>
+    </button>
+    
+    <!-- فرم‌های ورود و ثبت‌نام -->
+    <div class="auth-forms" id="authForms">
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-tab="login">ورود</div>
+            <div class="auth-tab" data-tab="register">ثبت‌نام</div>
+        </div>
+        
+        <div class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">ایمیل</label>
+                <input type="email" id="loginEmail" placeholder="ایمیل خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">رمز عبور</label>
+                <input type="password" id="loginPassword" placeholder="رمز عبور خود را وارد کنید">
+            </div>
+            
+            <button class="submit-btn" id="loginBtn">ورود</button>
+        </div>
+        
+        <div class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="registerName">نام کامل</label>
+                <input type="text" id="registerName" placeholder="نام خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerEmail">ایمیل</label>
+                <input type="email" id="registerEmail" placeholder="ایمیل خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerPassword">رمز عبور</label>
+                <input type="password" id="registerPassword" placeholder="رمز عبور خود را وارد کنید">
+            </div>
+            
+            <button class="submit-btn" id="registerBtn">ثبت‌نام</button>
+        </div>
+    </div>
+    
+    <!-- پنل کاربری -->
+    <div class="user-panel" id="userPanel">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div>
+                <div id="userName">کاربر مهمان</div>
+                <small id="userEmail">user@example.com</small>
+            </div>
+        </div>
+        
+        <div class="user-actions">
+            <a href="#" id="profileLink">پروفایل من</a>
+            <a href="#" id="myArticlesLink">مقالات من</a>
+            <a href="#" id="logoutLink">خروج</a>
+        </div>
+    </div>
+    
+    <header>
+        <h1 id="mainTitle"></h1>
+    </header>
+    
+    <div class="main-nav-container">
+        <div class="hamburger-menu" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="main-nav" id="mainNav">
+            <button class="btn btn-home active" id="homeBtn" data-page="home"></button>
+            <button class="btn btn-articles" id="articlesBtn" data-page="articles"></button>
+            <button class="btn btn-tutorials" id="tutorialsBtn" data-page="tutorials"></button>
+            <button class="btn btn-contact" id="contactBtn" data-page="contact"></button>
+        </nav>
+    </div>
+    
+    <!-- صفحه اصلی -->
+    <section id="home" class="page active">
+        <div class="content">
+            <div class="welcome-section">
+                <h2 id="welcomeTitle"></h2>
+                <p id="welcomeText"></p>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="جستجو در وبلاگ...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="post">
+                <h2 id="latestPostsTitle"></h2>
+                <p id="postContent"></p>
+                
+                <!-- سیستم کامنت‌گذاری -->
+                <div class="comments-section">
+                    <h3 id="commentsTitle">نظرات کاربران</h3>
+                    
+                    <div class="comment-form">
+                        <div class="form-group">
+                            <label for="commentText">نظر شما</label>
+                            <textarea id="commentText" placeholder="نظر خود را بنویسید..."></textarea>
+                        </div>
+                        <button class="submit-btn" id="submitComment">ارسال نظر</button>
+                    </div>
+                    
+                    <div class="comment-list" id="commentList">
+                        <!-- نظرات به صورت داینامیک اضافه می‌شوند -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- صفحه مقالات -->
+    <section id="articles" class="page">
+        <div class="content">
+            <h2 id="articlesTitle" style="text-align: center; margin-bottom: 2rem;"></h2>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="articleSearchInput" placeholder="جستجو در مقالات...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="article-list" id="articleList">
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://via.placeholder.com/600x400?text=HTML+CSS');"></div>
+                    <div class="article-content">
+                        <h3 id="article1Title"></h3>
+                        <p id="article1Desc"></p>
+                        <button class="btn btn-articles" style="margin-top: 1rem; padding: 8px 16px;">مطالعه بیشتر</button>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://via.placeholder.com/600x400?text=JavaScript');"></div>
+                    <div class="article-content">
+                        <h3 id="article2Title"></h3>
+                        <p id="article2Desc"></p>
+                        <button class="btn btn-articles" style="margin-top: 1rem; padding: 8px 16px;">مطالعه بیشتر</button>
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://via.placeholder.com/600x400?text=Web+Design');"></div>
+                    <div class="article-content">
+                        <h3 id="article3Title"></h3>
+                        <p id="article3Desc"></p>
+                        <button class="btn btn-articles" style="margin-top: 1rem; padding: 8px 16px;">مطالعه بیشتر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- صفحه آموزش‌ها -->
+    <section id="tutorials" class="page">
+        <div class="content">
+            <h2 id="tutorialsTitle" style="text-align: center; margin-bottom: 2rem;"></h2>
+            
+            <div class="tutorial-categories">
+                <div class="category-card">
+                    <div class="category-icon">📚</div>
+                    <h3 id="tutorialCat1"></h3>
+                    <p id="tutorialCat1Desc"></p>
+                    <button class="btn btn-tutorials" style="margin-top: 1rem; padding: 8px 16px;">مشاهده آموزش‌ها</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">💻</div>
+                    <h3 id="tutorialCat2"></h3>
+                    <p id="tutorialCat2Desc"></p>
+                    <button class="btn btn-tutorials" style="margin-top: 1rem; padding: 8px 16px;">مشاهده آموزش‌ها</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3 id="tutorialCat3"></h3>
+                    <p id="tutorialCat3Desc"></p>
+                    <button class="btn btn-tutorials" style="margin-top: 1rem; padding: 8px 16px;">مشاهده آموزش‌ها</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🔧</div>
+                    <h3 id="tutorialCat4"></h3>
+                    <p id="tutorialCat4Desc"></p>
+                    <button class="btn btn-tutorials" style="margin-top: 1rem; padding: 8px 16px;">مشاهده آموزش‌ها</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- صفحه تماس -->
+    <section id="contact" class="page">
+        <div class="content">
+            <h2 id="contactTitle" style="text-align: center; margin-bottom: 2rem;"></h2>
+            
+            <div class="contact-form">
+                <div class="form-group">
+                    <label for="name" id="nameLabel"></label>
+                    <input type="text" id="name" placeholder="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" id="emailLabel"></label>
+                    <input type="email" id="email" placeholder="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message" id="messageLabel"></label>
+                    <textarea id="message" placeholder=""></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitContactBtn"></button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- صفحه نتایج جستجو -->
+    <section id="search" class="page">
+        <div class="content">
+            <h2 id="searchResultsTitle" style="text-align: center; margin-bottom: 2rem;"></h2>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="mainSearchInput" placeholder="جستجو در وبلاگ...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="search-results" id="searchResults">
+                <!-- نتایج جستجو به صورت داینامیک اضافه می‌شوند -->
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p id="footerText"></p>
+    </footer>
+    
+    <script>
+        // مدیریت تغییر زبان
+        const languageToggle = document.getElementById('languageToggle');
+        const htmlElement = document.documentElement;
+        let currentLanguage = 'fa';
+        
+        // متون چندزبانه
+        const translations = {
+            fa: {
+                title: "وبلاگ برنامه‌نویسی",
+                home: "خانه",
+                articles: "مقالات",
+                tutorials: "آموزش‌ها",
+                contact: "تماس با ما",
+                welcomeTitle: "به وبلاگ برنامه‌نویسی خوش آمدید",
+                welcomeText: "این یک وبلاگ آموزشی برای توسعه‌دهندگان وب است. می‌توانید از مقالات و آموزش‌های رایگان ما استفاده کنید.",
+                latestPosts: "آخرین مقالات",
+                postContent: "این یک نمونه محتوا برای وبلاگ برنامه‌نویسی است. در اینجا می‌توانید مقالات و آموزش‌های مختلفی در زمینه‌های مختلف برنامه‌نویسی پیدا کنید.",
+                articlesTitle: "مقالات آموزشی",
+                article1Title: "آموزش HTML و CSS",
+                article1Desc: "یادگیری اصول اولیه طراحی وب با HTML و CSS",
+                article2Title: "جاوااسکریپت پیشرفته",
+                article2Desc: "مفاهیم پیشرفته جاوااسکریپت برای توسعه‌دهندگان",
+                article3Title: "طراحی واکنش‌گرا",
+                article3Desc: "چگونه وبسایت‌هایی بسازیم که در همه دستگاه‌ها به خوبی نمایش داده شوند",
+                tutorialsTitle: "دسته‌بندی آموزش‌ها",
+                tutorialCat1: "مبتدی",
+                tutorialCat1Desc: "آموزش‌های مقدماتی برای شروع برنامه‌نویسی",
+                tutorialCat2: "توسعه وب",
+                tutorialCat2Desc: "آموزش‌های جامع توسعه وب",
+                tutorialCat3: "طراحی UI/UX",
+                tutorialCat3Desc: "اصول طراحی رابط کاربری و تجربه کاربری",
+                tutorialCat4: "ابزارها",
+                tutorialCat4Desc: "معرفی و آموزش ابزارهای مفید برنامه‌نویسی",
+                contactTitle: "تماس با ما",
+                nameLabel: "نام شما",
+                emailLabel: "ایمیل",
+                messageLabel: "پیام",
+                submitBtn: "ارسال پیام",
+                footer: "تمامی حقوق محفوظ است © ۲۰۲۳",
+                toggleBtn: "EN",
+                authBtnText: "ورود / ثبت‌نام",
+                loginTab: "ورود",
+                registerTab: "ثبت‌نام",
+                loginEmailLabel: "ایمیل",
+                loginPasswordLabel: "رمز عبور",
+                loginBtn: "ورود",
+                registerNameLabel: "نام کامل",
+                registerEmailLabel: "ایمیل",
+                registerPasswordLabel: "رمز عبور",
+                registerBtn: "ثبت‌نام",
+                commentsTitle: "نظرات کاربران",
+                commentPlaceholder: "نظر خود را بنویسید...",
+                submitComment: "ارسال نظر",
+                searchPlaceholder: "جستجو در وبلاگ...",
+                articleSearchPlaceholder: "جستجو در مقالات...",
+                searchResultsTitle: "نتایج جستجو",
+                userPanel: {
+                    profile: "پروفایل من",
+                    articles: "مقالات من",
+                    logout: "خروج"
+                },
+                sampleComments: [
+                    {
+                        author: "علی محمدی",
+                        date: "۲ روز پیش",
+                        text: "مطالب بسیار عالی و کاربردی بودند. ممنون از زحمات شما"
+                    },
+                    {
+                        author: "نازنین کریمی",
+                        date: "۱ هفته پیش",
+                        text: "آموزش‌های شما واقعا به من کمک کرد. لطفا ادامه بدید"
+                    }
+                ]
+            },
+            en: {
+                title: "Programming Blog",
+                home: "Home",
+                articles: "Articles",
+                tutorials: "Tutorials",
+                contact: "Contact",
+                welcomeTitle: "Welcome to Programming Blog",
+                welcomeText: "This is an educational blog for web developers. You can use our free articles and tutorials.",
+                latestPosts: "Latest Articles",
+                postContent: "This is a sample content for programming blog. Here you can find various articles and tutorials about different programming topics.",
+                articlesTitle: "Educational Articles",
+                article1Title: "HTML & CSS Tutorial",
+                article1Desc: "Learn the basics of web design with HTML and CSS",
+                article2Title: "Advanced JavaScript",
+                article2Desc: "Advanced JavaScript concepts for developers",
+                article3Title: "Responsive Design",
+                article3Desc: "How to build websites that look good on all devices",
+                tutorialsTitle: "Tutorial Categories",
+                tutorialCat1: "Beginner",
+                tutorialCat1Desc: "Introductory tutorials for starting programming",
+                tutorialCat2: "Web Development",
+                tutorialCat2Desc: "Comprehensive web development tutorials",
+                tutorialCat3: "UI/UX Design",
+                tutorialCat3Desc: "Principles of user interface and user experience design",
+                tutorialCat4: "Tools",
+                tutorialCat4Desc: "Introduction and tutorials for useful programming tools",
+                contactTitle: "Contact Us",
+                nameLabel: "Your Name",
+                emailLabel: "Email",
+                messageLabel: "Message",
+                submitBtn: "Send Message",
+                footer: "All rights reserved © 2023",
+                toggleBtn: "FA",
+                authBtnText: "Login / Register",
+                loginTab: "Login",
+                registerTab: "Register",
+                loginEmailLabel: "Email",
+                loginPasswordLabel: "Password",
+                loginBtn: "Login",
+                registerNameLabel: "Full Name",
+                registerEmailLabel: "Email",
+                registerPasswordLabel: "Password",
+                registerBtn: "Register",
+                commentsTitle: "User Comments",
+                commentPlaceholder: "Write your comment...",
+                submitComment: "Submit Comment",
+                searchPlaceholder: "Search in blog...",
+                articleSearchPlaceholder: "Search in articles...",
+                searchResultsTitle: "Search Results",
+                userPanel: {
+                    profile: "My Profile",
+                    articles: "My Articles",
+                    logout: "Logout"
+                },
+                sampleComments: [
+                    {
+                        author: "Ali Mohammadi",
+                        date: "2 days ago",
+                        text: "The content was very useful. Thank you for your efforts"
+                    },
+                    {
+                        author: "Naznin Karimi",
+                        date: "1 week ago",
+                        text: "Your tutorials really helped me. Please continue"
+                    }
+                ]
+            }
+        };
+        
+        // تابع برای تغییر زبان
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'fa' ? 'en' : 'fa';
+            htmlElement.lang = currentLanguage;
+            htmlElement.dir = currentLanguage === 'fa' ? 'rtl' : 'ltr';
+            updateTexts();
+        }
+        
+        // تابع برای به‌روزرسانی متون
+        function updateTexts() {
+            const lang = translations[currentLanguage];
+            
+            // عناصر اصلی
+            document.getElementById('mainTitle').textContent = lang.title;
+            document.getElementById('homeBtn').textContent = lang.home;
+            document.getElementById('articlesBtn').textContent = lang.articles;
+            document.getElementById('tutorialsBtn').textContent = lang.tutorials;
+            document.getElementById('contactBtn').textContent = lang.contact;
+            document.getElementById('footerText').textContent = lang.footer;
+            languageToggle.textContent = lang.toggleBtn;
+            
+            // صفحه خانه
+            document.getElementById('welcomeTitle').textContent = lang.welcomeTitle;
+            document.getElementById('welcomeText').textContent = lang.welcomeText;
+            document.getElementById('latestPostsTitle').textContent = lang.latestPosts;
+            document.getElementById('postContent').textContent = lang.postContent;
+            
+            // صفحه مقالات
+            document.getElementById('articlesTitle').textContent = lang.articlesTitle;
+            document.getElementById('article1Title').textContent = lang.article1Title;
+            document.getElementById('article1Desc').textContent = lang.article1Desc;
+            document.getElementById('article2Title').textContent = lang.article2Title;
+            document.getElementById('article2Desc').textContent = lang.article2Desc;
+            document.getElementById('article3Title').textContent = lang.article3Title;
+            document.getElementById('article3Desc').textContent = lang.article3Desc;
+            
+            // صفحه آموزش‌ها
+            document.getElementById('tutorialsTitle').textContent = lang.tutorialsTitle;
+            document.getElementById('tutorialCat1').textContent = lang.tutorialCat1;
+            document.getElementById('tutorialCat1Desc').textContent = lang.tutorialCat1Desc;
+            document.getElementById('tutorialCat2').textContent = lang.tutorialCat2;
+            document.getElementById('tutorialCat2Desc').textContent = lang.tutorialCat2Desc;
+            document.getElementById('tutorialCat3').textContent = lang.tutorialCat3;
+            document.getElementById('tutorialCat3Desc').textContent = lang.tutorialCat3Desc;
+            document.getElementById('tutorialCat4').textContent = lang.tutorialCat4;
+            document.getElementById('tutorialCat4Desc').textContent = lang.tutorialCat4Desc;
+            
+            // صفحه تماس
+            document.getElementById('contactTitle').textContent = lang.contactTitle;
+            document.getElementById('nameLabel').textContent = lang.nameLabel;
+            document.getElementById('emailLabel').textContent = lang.emailLabel;
+            document.getElementById('messageLabel').textContent = lang.messageLabel;
+            document.getElementById('submitContactBtn').textContent = lang.submitBtn;
+            
+            // سیستم احراز هویت
+            document.getElementById('authBtnText').textContent = lang.authBtnText;
+            document.querySelector('.auth-tab[data-tab="login"]').textContent = lang.loginTab;
+            document.querySelector('.auth-tab[data-tab="register"]').textContent = lang.registerTab;
+            document.querySelector('#loginForm label[for="loginEmail"]').textContent = lang.loginEmailLabel;
+            document.querySelector('#loginForm label[for="loginPassword"]').textContent = lang.loginPasswordLabel;
+            document.getElementById('loginBtn').textContent = lang.loginBtn;
+            document.querySelector('#registerForm label[for="registerName"]').textContent = lang.registerNameLabel;
+            document.querySelector('#registerForm label[for="registerEmail"]').textContent = lang.registerEmailLabel;
+            document.querySelector('#registerForm label[for="registerPassword"]').textContent = lang.registerPasswordLabel;
+            document.getElementById('registerBtn').textContent = lang.registerBtn;
+            
+            // سیستم کامنت‌گذاری
+            document.getElementById('commentsTitle').textContent = lang.commentsTitle;
+            document.getElementById('commentText').placeholder = lang.commentPlaceholder;
+            document.getElementById('submitComment').textContent = lang.submitComment;
+            
+            // سیستم جستجو
+            document.getElementById('searchInput').placeholder = lang.searchPlaceholder;
+            document.getElementById('articleSearchInput').placeholder = lang.articleSearchPlaceholder;
+            document.getElementById('mainSearchInput').placeholder = lang.searchPlaceholder;
+            document.getElementById('searchResultsTitle').textContent = lang.searchResultsTitle;
+            
+            // پنل کاربری
+            document.getElementById('profileLink').textContent = lang.userPanel.profile;
+            document.getElementById('myArticlesLink').textContent = lang.userPanel.articles;
+            document.getElementById('logoutLink').textContent = lang.userPanel.logout;
+            
+            // تنظیم placeholderها
+            document.getElementById('name').placeholder = currentLanguage === 'fa' ? 'نام خود را وارد کنید' : 'Enter your name';
+            document.getElementById('email').placeholder = currentLanguage === 'fa' ? 'ایمیل خود را وارد کنید' : 'Enter your email';
+            document.getElementById('message').placeholder = currentLanguage === 'fa' ? 'پیام خود را بنویسید...' : 'Write your message...';
+            document.getElementById('loginEmail').placeholder = currentLanguage === 'fa' ? 'ایمیل خود را وارد کنید' : 'Enter your email';
+            document.getElementById('loginPassword').placeholder = currentLanguage === 'fa' ? 'رمز عبور خود را وارد کنید' : 'Enter your password';
+            document.getElementById('registerName').placeholder = currentLanguage === 'fa' ? 'نام خود را وارد کنید' : 'Enter your full name';
+            document.getElementById('registerEmail').placeholder = currentLanguage === 'fa' ? 'ایمیل خود را وارد کنید' : 'Enter your email';
+            document.getElementById('registerPassword').placeholder = currentLanguage === 'fa' ? 'رمز عبور خود را وارد کنید' : 'Enter your password';
+            
+            // بارگذاری کامنت‌های نمونه
+            loadSampleComments();
+        }
+        
+        // مدیریت تغییر صفحات
+        function changePage(pageId) {
+            // مخفی کردن همه صفحات
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // نمایش صفحه مورد نظر
+            document.getElementById(pageId).classList.add('active');
+            
+            // به روزرسانی عنوان دکمه‌های نویگیشن
+            document.querySelectorAll('.main-nav .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.main-nav .btn[data-page="${pageId}"]`).classList.add('active');
+            
+            // بستن منوی همبرگری در حالت موبایل
+            if (window.innerWidth <= 768) {
+                document.getElementById('mainNav').classList.remove('active');
+                document.getElementById('hamburgerMenu').classList.remove('active');
+            }
+        }
+        
+        // مدیریت سیستم احراز هویت
+        let isLoggedIn = false;
+        let currentUser = null;
+        
+        function toggleAuthForms() {
+            if (isLoggedIn) {
+                // نمایش پنل کاربری
+                document.getElementById('authForms').classList.remove('active');
+                document.getElementById('userPanel').classList.toggle('active');
+            } else {
+                // نمایش فرم‌های ورود/ثبت‌نام
+                document.getElementById('userPanel').classList.remove('active');
+                document.getElementById('authForms').classList.toggle('active');
+            }
+        }
+        
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                // شبیه‌سازی ورود موفق
+                isLoggedIn = true;
+                currentUser = {
+                    name: email.split('@')[0],
+                    email: email
+                };
+                
+                // به‌روزرسانی پنل کاربری
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+                document.getElementById('authBtnText').textContent = currentLanguage === 'fa' ? currentUser.name : currentUser.name;
+                
+                // بستن فرم‌ها
+                document.getElementById('authForms').classList.remove('active');
+                
+                // نمایش پیام موفقیت
+                alert(currentLanguage === 'fa' ? 'ورود با موفقیت انجام شد!' : 'Login successful!');
+            } else {
+                alert(currentLanguage === 'fa' ? 'لطفا ایمیل و رمز عبور را وارد کنید' : 'Please enter email and password');
+            }
+        }
+        
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (name && email && password) {
+                // شبیه‌سازی ثبت‌نام موفق
+                isLoggedIn = true;
+                currentUser = {
+                    name: name,
+                    email: email
+                };
+                
+                // به‌روزرسانی پنل کاربری
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+                document.getElementById('authBtnText').textContent = currentLanguage === 'fa' ? currentUser.name : currentUser.name;
+                
+                // تغییر به تب ورود برای دفعات بعد
+                document.querySelector('.auth-tab[data-tab="login"]').click();
+                
+                // بستن فرم‌ها
+                document.getElementById('authForms').classList.remove('active');
+                
+                // نمایش پیام موفقیت
+                alert(currentLanguage === 'fa' ? 'ثبت‌نام با موفقیت انجام شد!' : 'Registration successful!');
+            } else {
+                alert(currentLanguage === 'fa' ? 'لطفا تمام فیلدها را پر کنید' : 'Please fill all fields');
+            }
+        }
+        
+        function logout() {
+            isLoggedIn = false;
+            currentUser = null;
+            document.getElementById('authBtnText').textContent = translations[currentLanguage].authBtnText;
+            document.getElementById('userPanel').classList.remove('active');
+            alert(currentLanguage === 'fa' ? 'با موفقیت خارج شدید' : 'Logged out successfully');
+        }
+        
+        // مدیریت کامنت‌ها
+        function loadSampleComments() {
+            const commentList = document.getElementById('commentList');
+            commentList.innerHTML = '';
+            
+            const comments = translations[currentLanguage].sampleComments;
+            
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <div class="comment-avatar">${comment.author.charAt(0)}</div>
+                    <div class="comment-content">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-date">${comment.date}</div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                `;
+                commentList.appendChild(commentElement);
+            });
+        }
+        
+        function addComment() {
+            const commentText = document.getElementById('commentText').value;
+            
+            if (commentText) {
+                if (!isLoggedIn) {
+                    alert(currentLanguage === 'fa' ? 'لطفا ابتدا وارد شوید' : 'Please login first');
+                    document.getElementById('authForms').classList.add('active');
+                    return;
+                }
+                
+                const commentList = document.getElementById('commentList');
+                const now = new Date();
+                const dateStr = currentLanguage === 'fa' ? 
+                    'همین الان' : 
+                    'Just now';
+                
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <div class="comment-avatar">${currentUser.name.charAt(0).toUpperCase()}</div>
+                    <div class="comment-content">
+                        <div class="comment-author">${currentUser.name}</div>
+                        <div class="comment-date">${dateStr}</div>
+                        <div class="comment-text">${commentText}</div>
+                    </div>
+                `;
+                
+                commentList.insertBefore(commentElement, commentList.firstChild);
+                document.getElementById('commentText').value = '';
+                
+                // اسکرول به کامنت جدید
+                commentElement.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert(currentLanguage === 'fa' ? 'لطفا متن نظر را وارد کنید' : 'Please enter comment text');
+            }
+        }
+        
+        // مدیریت جستجو
+        function performSearch(query) {
+            if (!query) return;
+            
+            changePage('search');
+            
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';
+            
+            // شبیه‌سازی نتایج جستجو
+            const results = [
+                {
+                    title: currentLanguage === 'fa' ? 'آموزش HTML و CSS' : 'HTML & CSS Tutorial',
+                    excerpt: currentLanguage === 'fa' ? 'یادگیری اصول اولیه طراحی وب با HTML و CSS' : 'Learn the basics of web design with HTML and CSS',
+                    page: 'articles'
+                },
+                {
+                    title: currentLanguage === 'fa' ? 'جاوااسکریپت پیشرفته' : 'Advanced JavaScript',
+                    excerpt: currentLanguage === 'fa' ? 'مفاهیم پیشرفته جاوااسکریپت برای توسعه‌دهندگان' : 'Advanced JavaScript concepts for developers',
+                    page: 'articles'
+                },
+                {
+                    title: currentLanguage === 'fa' ? 'اصول طراحی UI/UX' : 'UI/UX Design Principles',
+                    excerpt: currentLanguage === 'fa' ? 'آموزش اصول طراحی رابط کاربری و تجربه کاربری' : 'Learn user interface and user experience design principles',
+                    page: 'tutorials'
+                }
+            ];
+            
+            results.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'search-result-item';
+                resultElement.innerHTML = `
+                    <h3>${result.title}</h3>
+                    <p>${result.excerpt}</p>
+                    <button class="btn" data-page="${result.page}" style="margin-top: 0.5rem; padding: 6px 12px;">
+                        ${currentLanguage === 'fa' ? 'مشاهده' : 'View'}
+                    </button>
+                `;
+                searchResults.appendChild(resultElement);
+                
+                // اضافه کردن رویداد کلیک به دکمه‌های نتایج جستجو
+                resultElement.querySelector('button').addEventListener('click', function() {
+                    changePage(this.getAttribute('data-page'));
+                });
+            });
+        }
+        
+        // مدیریت منوی همبرگری در موبایل
+        function toggleMobileMenu() {
+            document.getElementById('mainNav').classList.toggle('active');
+            document.getElementById('hamburgerMenu').classList.toggle('active');
+        }
+        
+        // رویداد کلیک برای تغییر زبان
+        languageToggle.addEventListener('click', toggleLanguage);
+        
+        // رویداد کلیک برای دکمه‌های نویگیشن
+        document.querySelectorAll('.main-nav .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                changePage(this.getAttribute('data-page'));
+            });
+        });
+        
+        // رویداد کلیک برای دکمه احراز هویت
+        document.getElementById('authToggle').addEventListener('click', toggleAuthForms);
+        
+        // رویداد کلیک برای تب‌های فرم احراز هویت
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(`${this.getAttribute('data-tab')}Form`).classList.add('active');
+            });
+        });
+        
+        // رویداد کلیک برای دکمه‌های ورود و ثبت‌نام
+        document.getElementById('loginBtn').addEventListener('click', login);
+        document.getElementById('registerBtn').addEventListener('click', register);
+        
+        // رویداد کلیک برای لینک‌های پنل کاربری
+        document.getElementById('profileLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert(currentLanguage === 'fa' ? 'پروفایل کاربر' : 'User Profile');
+            document.getElementById('userPanel').classList.remove('active');
+        });
+        
+        document.getElementById('myArticlesLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert(currentLanguage === 'fa' ? 'مقالات کاربر' : 'User Articles');
+            document.getElementById('userPanel').classList.remove('active');
+        });
+        
+        document.getElementById('logoutLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+        
+        // رویداد کلیک برای ارسال کامنت
+        document.getElementById('submitComment').addEventListener('click', addComment);
+        
+        // رویداد کلیک برای دکمه‌های جستجو
+        document.querySelectorAll('.search-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const searchInput = this.parentElement.querySelector('.search-input');
+                performSearch(searchInput.value);
+            });
+        });
+        
+        // رویداد کلیک برای منوی همبرگری
+        document.getElementById('hamburgerMenu').addEventListener('click', toggleMobileMenu);
+        
+        // مقداردهی اولیه
+        updateTexts();
+        changePage('home');
+        
+        // بستن فرم‌ها و پنل‌ها با کلیک خارج از آنها
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.auth-forms') && !e.target.closest('#authToggle')) {
+                document.getElementById('authForms').classList.remove('active');
+            }
+            
+            if (!e.target.closest('.user-panel') && !e.target.closest('#authToggle')) {
+                document.getElementById('userPanel').classList.remove('active');
+            }
+            
+            if (!e.target.closest('.main-nav') && !e.target.closest('#hamburgerMenu') && window.innerWidth <= 768) {
+                document.getElementById('mainNav').classList.remove('active');
+                document.getElementById('hamburgerMenu').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
